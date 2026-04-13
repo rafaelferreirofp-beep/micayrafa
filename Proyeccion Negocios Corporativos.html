@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyección Negocios Corporativos — Protek Corp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Assistant', Arial, sans-serif;
+      background: #EEF2FB;
+      color: #1a1a2e;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: #20409A;
+      color: white;
+      padding: 14px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 3px 10px rgba(32,64,154,0.3);
+    }
+    .logo-name { font-size: 24px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; }
+    .logo-subtitle { font-size: 11.5px; opacity: 0.75; letter-spacing: 0.6px; margin-top: 3px; text-transform: uppercase; }
+    .header-right { display: flex; align-items: center; gap: 20px; }
+    .header-meta { text-align: right; font-size: 12.5px; opacity: 0.85; line-height: 1.6; }
+    .header-meta strong { font-weight: 700; font-size: 13px; }
+
+    /* ===== SHARE / GENERATE BUTTON ===== */
+    .btn-share {
+      background: #1EB0D5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 7px 15px;
+      font-family: 'Assistant', Arial, sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn-share:hover:not(:disabled) { background: #189ab8; }
+    .btn-share:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ===== PRINT BUTTON ===== */
+    .btn-print {
+      background: transparent;
+      color: white;
+      border: 1.5px solid rgba(255,255,255,0.55);
+      border-radius: 5px;
+      padding: 7px 15px;
+      font-family: 'Assistant', Arial, sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-print:hover { background: rgba(255,255,255,0.15); border-color: white; }
+
+    /* ===== LAYOUT ===== */
+    main { max-width: 1320px; margin: 0 auto; padding: 28px 32px; }
+
+    /* ===== CARD ===== */
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(32,64,154,0.08);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .card-title {
+      background: #20409A;
+      color: white;
+      padding: 11px 22px;
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .card-body { padding: 24px 22px; }
+
+    /* ===== RESUMEN CARD (Avance + Proyección) ===== */
+    .resumen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .resumen-col-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #20409A;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #EEF2FB;
+    }
+    .s1-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .field-group { display: flex; flex-direction: column; gap: 5px; }
+    .field-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #20409A;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .field-group input {
+      font-family: 'Assistant', Arial, sans-serif;
+      font-size: 15px;
+      border: 1.5px solid #c8d0e8;
+      border-radius: 5px;
+      padding: 9px 13px;
+      color: #222;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field-group input:focus {
+      outline: none;
+      border-color: #20409A;
+      box-shadow: 0 0 0 3px rgba(32,64,154,0.1);
+    }
+    .highlight-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      gap: 12px;
+    }
+    .highlight-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #20409A;
+      white-space: nowrap;
+    }
+    .highlight-box {
+      background: #FFFDE7;
+      border: 2px solid #F9A825;
+      border-radius: 5px;
+      padding: 10px 18px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a2e;
+      min-width: 190px;
+      text-align: right;
+      letter-spacing: 0.3px;
+    }
+    .resumen-divider {
+      width: 1px;
+      background: #EEF2FB;
+      margin: 0 -16px;
+    }
+
+    /* ===== UPLOAD ===== */
+    .upload-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border: 2px dashed #b8c3e8;
+      border-radius: 7px;
+      background: #f5f7ff;
+      margin-bottom: 22px;
+    }
+    .btn-upload {
+      background: #20409A;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 9px 18px;
+      font-family: 'Assistant', Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-upload:hover { background: #183480; }
+    .filename-label { font-size: 13px; color: #777; font-style: italic; }
+
+    /* ===== TABLES ===== */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      background: #20409A;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    thead th.r { text-align: right; }
+    tbody tr:nth-child(odd) td  { background: #ffffff; }
+    tbody tr:nth-child(even) td { background: #EEF2FB; }
+    tbody td { padding: 9px 14px; border-bottom: 1px solid #e4eaf6; vertical-align: middle; }
+    td.r { text-align: right; font-variant-numeric: tabular-nums; }
+    tbody tr:not(.row-total):not(.row-pct):not(.row-usd):hover td { background: #dce5f8 !important; }
+
+    tr.row-total td { background: #1EB0D5 !important; color: #fff !important; font-weight: 700; border-bottom: none; }
+    tr.row-pct   td { background: #EEF2FB !important; color: #20409A !important; font-weight: 700; border-bottom: 1px solid #c8d0e8; }
+    tr.row-usd   td { background: #1EB0D5 !important; color: #fff !important; font-weight: 700; border-bottom: none; }
+
+    tr.top-1 td { background: #FFF8DC !important; }
+
+    .pct-input {
+      width: 58px;
+      text-align: center;
+      border: 1.5px solid #20409A;
+      border-radius: 3px;
+      padding: 4px 5px;
+      font-family: 'Assistant', Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #20409A;
+      background: white;
+    }
+    .pct-input:focus { outline: none; border-color: #1EB0D5; }
+
+    td.clickable { cursor: pointer; text-decoration: underline dotted #20409A; }
+    td.clickable:hover { color: #20409A; font-weight: 700; }
+
+    /* ===== CONTROLS (Section 3) ===== */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 20px;
+      margin-bottom: 16px;
+      align-items: flex-end;
+    }
+    .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
+    .ctrl-group label { font-size: 11px; font-weight: 700; color: #20409A; text-transform: uppercase; letter-spacing: 0.4px; }
+    .ctrl-group select {
+      font-family: 'Assistant', Arial, sans-serif;
+      font-size: 13px;
+      border: 1.5px solid #c8d0e8;
+      border-radius: 4px;
+      padding: 7px 10px;
+      color: #333;
+      background: white;
+      cursor: pointer;
+      min-width: 130px;
+    }
+    .ctrl-group select:focus { outline: none; border-color: #20409A; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state { text-align: center; padding: 46px 20px; color: #A7A9AC; font-size: 14.5px; }
+
+    /* ===== DRILL-DOWN MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(32,64,154,0.35);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+      width: 90%;
+      max-width: 860px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-header {
+      background: #20409A;
+      color: white;
+      padding: 13px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .modal-header-title { font-size: 14px; font-weight: 700; }
+    .modal-header-sub   { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+    .modal-close { background: none; border: none; color: white; font-size: 22px; cursor: pointer; line-height: 1; padding: 0 4px; opacity: 0.8; }
+    .modal-close:hover { opacity: 1; }
+    .modal-body { overflow-y: auto; padding: 16px; flex: 1; }
+    .modal-empty { text-align: center; padding: 30px; color: #A7A9AC; font-size: 14px; }
+    .modal-body table thead th { font-size: 11.5px; padding: 8px 12px; }
+    .modal-body table td       { font-size: 12.5px; padding: 8px 12px; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 700px) {
+      /* Header apilado */
+      header {
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .logo-name { font-size: 18px; letter-spacing: 1.5px; }
+      .logo-subtitle { font-size: 10px; }
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .header-meta { font-size: 11px; text-align: left; }
+      .btn-share, .btn-print { font-size: 11.5px; padding: 6px 11px; }
+
+      /* Layout */
+      main { padding: 14px 12px; }
+      .card-body { padding: 16px 14px; }
+      .card-title { font-size: 12.5px; padding: 9px 14px; }
+
+      /* Resumen: 1 columna */
+      .resumen-grid { grid-template-columns: 1fr; gap: 20px; }
+
+      /* Inputs: 1 columna */
+      .s1-grid { grid-template-columns: 1fr; gap: 12px; }
+
+      /* Caja de valores resaltados: full width */
+      .highlight-item { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .highlight-box  { min-width: 0; width: 100%; font-size: 18px; padding: 8px 14px; }
+
+      /* Upload: apilado */
+      .upload-area { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+      /* Tablas: scroll horizontal con font más chico */
+      .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table       { font-size: 11.5px; min-width: 480px; }
+      thead th    { padding: 8px 10px; font-size: 10.5px; }
+      tbody td    { padding: 7px 10px; }
+      .pct-input  { width: 48px; font-size: 11px; }
+
+      /* Filtros top: 2 columnas */
+      .controls-bar { gap: 8px 12px; }
+      .ctrl-group { min-width: calc(50% - 6px); }
+      .ctrl-group select { min-width: 0; width: 100%; font-size: 12px; }
+
+      /* Modal */
+      .modal-box { width: 98%; max-height: 90vh; border-radius: 7px; }
+      .modal-header { padding: 10px 14px; }
+      .modal-body   { padding: 10px; }
+    }
+
+    /* Ajuste fino para landscape (600-900px) */
+    @media (min-width: 701px) and (max-width: 900px) {
+      main { padding: 18px 18px; }
+      .resumen-grid { gap: 20px; }
+      .highlight-box { min-width: 160px; font-size: 17px; }
+      table { font-size: 12px; }
+      thead th { font-size: 11px; padding: 8px 10px; }
+      tbody td  { padding: 7px 10px; }
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body  { background: white; font-size: 11px; }
+      main  { padding: 6px; max-width: 100%; }
+
+      .upload-area,
+      .btn-upload,
+      .btn-print,
+      .controls-bar,
+      .modal-overlay { display: none !important; }
+
+      .card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 14px; page-break-inside: avoid; }
+
+      .card--pagebreak { page-break-before: always; break-before: page; border-top: none; margin-top: 0; }
+
+      header,
+      thead th,
+      tr.row-total td,
+      tr.row-pct   td,
+      tr.row-usd   td,
+      tbody tr:nth-child(odd) td,
+      tbody tr:nth-child(even) td {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .highlight-box { border: 2px solid #F9A825; font-size: 16px; }
+      .pct-input { border: 1px solid #20409A; }
+      .resumen-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div>
+    <div class="logo-name">Protek Corp</div>
+    <div class="logo-subtitle">Informe Semanal de Proyección de Ventas</div>
+  </div>
+  <div class="header-right">
+    <div class="header-meta" id="headerMeta"></div>
+    <button class="btn-share" id="btnShare" onclick="generarInforme()" disabled title="Cargá el Excel primero">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+        <polyline points="16 6 12 2 8 6"/>
+        <line x1="12" y1="2" x2="12" y2="15"/>
+      </svg>
+      Generar Informe
+    </button>
+    <button class="btn-print" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <polyline points="6 9 6 2 18 2 18 9"/>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+        <rect x="6" y="14" width="12" height="8"/>
+      </svg>
+      Exportar PDF
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===== CARD 1: RESUMEN (Avance + Proyección juntos) ===== -->
+  <div class="card">
+    <div class="card-title">Resumen del Mes</div>
+    <div class="card-body">
+      <div class="resumen-grid">
+
+        <!-- Columna izquierda: Avance de Ventas -->
+        <div>
+          <div class="resumen-col-title">Avance de Ventas</div>
+          <div class="s1-grid">
+            <div class="field-group">
+              <label for="inp1">Oppen Protek SRL (USD)</label>
+              <input type="text" id="inp1" placeholder="Ej: 175.374" autocomplete="off" oninput="calcLiberado()">
+            </div>
+            <div class="field-group">
+              <label for="inp2">Oppen Shyma (USD)</label>
+              <input type="text" id="inp2" placeholder="Ej: 82.500" autocomplete="off" oninput="calcLiberado()">
+            </div>
+          </div>
+          <div class="highlight-item">
+            <span class="highlight-label">Liberado con IVA</span>
+            <div class="highlight-box" id="liberadoVal">—</div>
+          </div>
+        </div>
+
+        <!-- Columna derecha: Proyección del Mes -->
+        <div>
+          <div class="resumen-col-title">Proyección del Mes</div>
+          <div id="proyResumenMsg" style="color:#A7A9AC;font-size:13px;font-style:italic;padding:10px 0">
+            Cargá el archivo Excel para ver la proyección
+          </div>
+          <div id="proyResumen" style="display:none">
+            <div class="highlight-item">
+              <span class="highlight-label">Proyección</span>
+              <div class="highlight-box" id="proyVal">—</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CARD 2: CUADRO DE PROYECCIÓN ===== -->
+  <div class="card">
+    <div class="card-title">Cuadro de Proyección de Ventas</div>
+    <div class="card-body">
+
+      <div class="upload-area">
+        <button class="btn-upload" onclick="document.getElementById('xlsxFile').click()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Cargar archivo Excel (.xlsx)
+        </button>
+        <input type="file" id="xlsxFile" accept=".xlsx,.xls" style="display:none" onchange="handleFile(event)">
+        <span class="filename-label" id="filenameLabel">Ningún archivo seleccionado</span>
+      </div>
+
+      <div id="proyTable">
+        <div class="empty-state">Cargá el archivo Excel para ver los datos</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== CARD 3: TOP DE PROYECTOS ===== -->
+  <div class="card card--pagebreak">
+    <div class="card-title">Top de Proyectos</div>
+    <div class="card-body">
+
+      <div class="controls-bar" id="topControls" style="display:none">
+        <div class="ctrl-group">
+          <label>Top N</label>
+          <select id="selN" onchange="renderTop()">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="all">Todos</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>Etapa</label>
+          <select id="selEtapa" onchange="renderTop()"></select>
+        </div>
+        <div class="ctrl-group">
+          <label>Gerente de Cuenta</label>
+          <select id="selGerente" onchange="renderTop()"></select>
+        </div>
+        <div class="ctrl-group">
+          <label>Ordenar por</label>
+          <select id="selSort" onchange="renderTop()">
+            <option value="value">Valor (mayor a menor)</option>
+            <option value="stage">Etapa</option>
+            <option value="manager">Gerente de Cuenta</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="topTable">
+        <div class="empty-state">Cargá el archivo Excel para ver los datos</div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== DRILL-DOWN MODAL ===== -->
+<div class="modal-overlay" id="drillModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-header-title" id="modalTitle">Detalle</div>
+        <div class="modal-header-sub"  id="modalSub"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================
+   UTILIDADES
+   ================================================ */
+
+function fmt(val) {
+  if (val == null || isNaN(val)) return '$ 0';
+  return '$ ' + Math.round(val).toLocaleString('en-US');
+}
+
+/* Parsea inputs manuales en formato argentino (punto=miles, coma=decimal) */
+function parseArg(str) {
+  if (str == null || String(str).trim() === '') return 0;
+  const s = String(str).trim().replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
+/* Parsea Ingreso del Excel detectando el formato automáticamente */
+function parseIngreso(raw) {
+  if (typeof raw === 'number') return raw;
+  let s = String(raw).trim().replace(/[$\s]/g, '');
+  if (s === '' || s === '-') return 0;
+
+  const lastComma  = s.lastIndexOf(',');
+  const lastPeriod = s.lastIndexOf('.');
+
+  if (lastComma > -1 && lastPeriod > -1) {
+    if (lastComma > lastPeriod) {
+      s = s.replace(/\./g, '').replace(',', '.');   // europeo/argentino: 1.234,56
+    } else {
+      s = s.replace(/,/g, '');                       // US: 1,234.56
+    }
+  } else if (lastComma > -1) {
+    const after = s.slice(lastComma + 1);
+    if (after.length === 3 && /^\d{3}$/.test(after)) {
+      s = s.replace(/,/g, '');     // "273,171" → miles
+    } else {
+      s = s.replace(',', '.');     // "273,17"  → decimal
+    }
+  } else if (lastPeriod > -1) {
+    const periodCount = (s.match(/\./g) || []).length;
+    if (periodCount > 1) {
+      s = s.replace(/\./g, '');   // "1.234.567" → múltiples puntos = miles
+    } else {
+      const after = s.slice(lastPeriod + 1);
+      if (after.length === 3 && /^\d{3}$/.test(after)) {
+        s = s.replace(/\./g, ''); // "273.171" → exactamente 3 dígitos = miles (arg)
+      }
+      // "273.17" → dejar el punto como decimal
+    }
+  }
+
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function col(r) {
+  return function(...keys) {
+    for (const k of keys) {
+      if (r[k] !== undefined && r[k] !== null && r[k] !== '') return String(r[k]).trim();
+    }
+    return '';
+  };
+}
+
+/* Header dinámico */
+(function () {
+  const d = new Date();
+  const MONTHS = ['enero','febrero','marzo','abril','mayo','junio',
+                  'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const DAYS   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const dt     = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dow    = dt.getUTCDay() || 7;
+  dt.setUTCDate(dt.getUTCDate() + 4 - dow);
+  const y0     = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
+  const week   = Math.ceil((((dt - y0) / 86400000) + 1) / 7);
+  document.getElementById('headerMeta').innerHTML =
+    `<strong>${DAYS[d.getDay()]}, ${d.getDate()} de ${MONTHS[d.getMonth()]} de ${d.getFullYear()}</strong>` +
+    `<br>Semana ${week}`;
+})();
+
+/* ================================================
+   SECCIÓN 1 — AVANCE
+   ================================================ */
+
+function calcLiberado() {
+  const v1  = parseArg(document.getElementById('inp1').value);
+  const v2  = parseArg(document.getElementById('inp2').value);
+  const tot = v1 + v2;
+  document.getElementById('liberadoVal').textContent = (v1 + v2 === 0) ? '—' : fmt(tot);
+}
+
+/* ================================================
+   CONFIGURACIÓN DE ETAPAS
+   % de probabilidad por defecto: todos en 0
+   ================================================ */
+
+const STAGES = [
+  { key: '10', exact: '10- COTIZACIÓN DE PROPUESTA', header: '10- COTIZACIÓN DE PROPUESTA', defaultPct: 0 },
+  { key: '15', exact: '15- PRESENTADO',              header: '15- PRESENTADO',              defaultPct: 0 },
+  { key: '20', exact: '20- AJUSTE COMERCIAL',        header: '20- AJUSTE COMERCIAL',        defaultPct: 0 },
+  { key: '40', exact: 'Confirmado, a liberar',       header: 'Confirmado, a Liberar',       defaultPct: 0 },
+];
+
+function stageKey(etapa) {
+  const s = String(etapa || '').trim().toLowerCase();
+  for (const st of STAGES) {
+    if (s === st.exact.toLowerCase()) return st.key;
+  }
+  return null;
+}
+
+/* ================================================
+   DATOS GLOBALES
+   ================================================ */
+
+let DATA = [];
+
+/* ================================================
+   CARGA DEL EXCEL
+   ================================================ */
+
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('filenameLabel').textContent = file.name;
+
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const wb   = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
+      const ws   = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+      parseRows(rows);
+      renderProy();
+      initTopFilters();
+      renderTop();
+    } catch (err) {
+      alert('Error al leer el archivo:\n' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseRows(rows) {
+  DATA = [];
+  for (const raw of rows) {
+    const r = {};
+    for (const [k, v] of Object.entries(raw)) r[k.replace(/^\uFEFF/, '').trim()] = v;
+
+    const g     = col(r);
+    const etapa = g('Etapa', 'etapa', 'ETAPA');
+    const key   = stageKey(etapa);
+    if (!key) continue;
+
+    const ingresoRaw = r['Ingreso'] ?? r['ingreso'] ?? r['INGRESO'] ?? '';
+    const ingreso    = parseIngreso(ingresoRaw);
+
+    DATA.push({
+      etapa, key, ingreso,
+      responsable: g('Responsable', 'responsable', 'RESPONSABLE'),
+      negociacion: g(
+        'Nombre de la negociación', 'Nombre de la negociacion',
+        'nombre de la negociación', 'NombreDeLaNegociacion', 'Negociación', 'Negociacion'
+      ),
+      compania: g('Compañía', 'Compania', 'compañía', 'compania', 'Empresa', 'empresa', 'Company'),
+    });
+  }
+}
+
+/* ================================================
+   SECCIÓN 2 — CUADRO DE PROYECCIÓN
+   ================================================ */
+
+function renderProy() {
+  const managers = [...new Set(DATA.map(r => r.responsable).filter(Boolean))].sort();
+
+  const mx = {};
+  for (const m of managers) mx[m] = { '10': 0, '15': 0, '20': 0, '40': 0 };
+  for (const r of DATA) if (r.responsable && r.key) mx[r.responsable][r.key] += r.ingreso;
+
+  const totals = { '10': 0, '15': 0, '20': 0, '40': 0 };
+  for (const m of managers) for (const k of ['10','15','20','40']) totals[k] += mx[m][k];
+  const grandTotal = Object.values(totals).reduce((a, b) => a + b, 0);
+
+  let h = '<div class="table-wrap"><table>';
+  h += '<thead><tr><th>Gerente de Cuenta</th>';
+  for (const s of STAGES) h += `<th class="r">${esc(s.header)}</th>`;
+  h += '<th class="r">Total</th></tr></thead><tbody>';
+
+  for (const m of managers) {
+    h += '<tr><td><strong>' + esc(m) + '</strong></td>';
+    let rowTot = 0;
+    for (const s of STAGES) {
+      const v = mx[m][s.key];
+      rowTot += v;
+      if (v) {
+        h += `<td class="r clickable" onclick="openDrillDown('${esc(m)}','${s.key}','${esc(s.header)}')" title="Ver detalle">${fmt(v)}</td>`;
+      } else {
+        h += `<td class="r"><span style="color:#ccc">—</span></td>`;
+      }
+    }
+    h += `<td class="r"><strong>${fmt(rowTot)}</strong></td></tr>`;
+  }
+
+  h += '<tr class="row-total"><td><strong>Total</strong></td>';
+  for (const s of STAGES) h += `<td class="r">${fmt(totals[s.key])}</td>`;
+  h += `<td class="r">${fmt(grandTotal)}</td></tr>`;
+
+  h += '<tr class="row-pct"><td>% de Probabilidad</td>';
+  for (const s of STAGES) {
+    h += `<td class="r"><input type="number" class="pct-input" id="pct_${s.key}" ` +
+         `value="0" min="0" max="100" oninput="recalcUSD()">&nbsp;%</td>`;
+  }
+  h += '<td></td></tr>';
+
+  h += '<tr class="row-usd"><td><strong>USD a Liberar</strong></td>';
+  for (const s of STAGES) h += `<td class="r" id="usd_${s.key}">$ 0</td>`;
+  h += '<td></td></tr>';
+
+  h += '</tbody></table></div>';
+
+  document.getElementById('proyTable').innerHTML = h;
+
+  /* Mostrar proyección en el card de resumen y habilitar botón */
+  document.getElementById('proyResumenMsg').style.display = 'none';
+  document.getElementById('proyResumen').style.display    = 'block';
+  document.getElementById('btnShare').disabled = false;
+  document.getElementById('btnShare').title    = 'Descargar informe para compartir';
+  recalcUSD();
+}
+
+function recalcUSD() {
+  const totals = { '10': 0, '15': 0, '20': 0, '40': 0 };
+  for (const r of DATA) if (r.key) totals[r.key] += r.ingreso;
+
+  let proy = 0;
+  for (const s of STAGES) {
+    const el  = document.getElementById('pct_' + s.key);
+    if (!el) continue;
+    const pct = Math.max(0, Math.min(100, parseFloat(el.value) || 0)) / 100;
+    const usd = totals[s.key] * pct;
+    proy += usd;
+    const cell = document.getElementById('usd_' + s.key);
+    if (cell) cell.textContent = fmt(usd);
+  }
+
+  document.getElementById('proyVal').textContent = fmt(proy);
+}
+
+/* ================================================
+   SECCIÓN 3 — TOP DE PROYECTOS
+   ================================================ */
+
+function initTopFilters() {
+  const prevEtapa   = document.getElementById('selEtapa').value;
+  const prevGerente = document.getElementById('selGerente').value;
+
+  const etapas   = [...new Set(DATA.map(r => r.etapa).filter(Boolean))].sort();
+  const gerentes = [...new Set(DATA.map(r => r.responsable).filter(Boolean))].sort();
+
+  const se = document.getElementById('selEtapa');
+  se.innerHTML = '<option value="">Todas las Etapas</option>';
+  for (const e of etapas) {
+    const o = document.createElement('option');
+    o.value = e; o.textContent = e;
+    if (e === prevEtapa) o.selected = true;
+    se.appendChild(o);
+  }
+
+  const sg = document.getElementById('selGerente');
+  sg.innerHTML = '<option value="">Todos los Gerentes</option>';
+  for (const g of gerentes) {
+    const o = document.createElement('option');
+    o.value = g; o.textContent = g;
+    if (g === prevGerente) o.selected = true;
+    sg.appendChild(o);
+  }
+
+  document.getElementById('topControls').style.display = 'flex';
+}
+
+function renderTop() {
+  if (!DATA.length) return;
+
+  const topN    = document.getElementById('selN').value;
+  const etapa   = document.getElementById('selEtapa').value;
+  const gerente = document.getElementById('selGerente').value;
+  const sortBy  = document.getElementById('selSort').value;
+
+  let rows = [...DATA];
+  if (etapa)   rows = rows.filter(r => r.etapa === etapa);
+  if (gerente) rows = rows.filter(r => r.responsable === gerente);
+
+  if      (sortBy === 'value')   rows.sort((a, b) => b.ingreso - a.ingreso);
+  else if (sortBy === 'stage')   rows.sort((a, b) => a.etapa.localeCompare(b.etapa) || b.ingreso - a.ingreso);
+  else if (sortBy === 'manager') rows.sort((a, b) => a.responsable.localeCompare(b.responsable) || b.ingreso - a.ingreso);
+
+  if (topN !== 'all') rows = rows.slice(0, parseInt(topN));
+
+  if (!rows.length) {
+    document.getElementById('topTable').innerHTML =
+      '<div class="empty-state">No hay proyectos para los filtros seleccionados</div>';
+    return;
+  }
+
+  let h = '<div class="table-wrap"><table>';
+  h += `<thead><tr>
+    <th style="width:40px">#</th>
+    <th>Nombre de la Negociación</th>
+    <th>Compañía</th>
+    <th>Etapa</th>
+    <th>Gerente de Cuenta</th>
+    <th class="r">Ingreso (USD)</th>
+  </tr></thead><tbody>`;
+
+  rows.forEach((r, i) => {
+    const cls = i === 0 ? ' class="top-1"' : '';
+    h += `<tr${cls}>
+      <td>${i + 1}</td>
+      <td>${esc(r.negociacion) || '<span style="color:#bbb">—</span>'}</td>
+      <td>${esc(r.compania)    || '<span style="color:#bbb">—</span>'}</td>
+      <td>${esc(r.etapa)}</td>
+      <td>${esc(r.responsable) || '<span style="color:#bbb">—</span>'}</td>
+      <td class="r">${fmt(r.ingreso)}</td>
+    </tr>`;
+  });
+
+  h += '</tbody></table></div>';
+  document.getElementById('topTable').innerHTML = h;
+}
+
+/* ================================================
+   DRILL-DOWN MODAL
+   ================================================ */
+
+function openDrillDown(manager, stageKey, stageLabel) {
+  const rows  = DATA.filter(r => r.responsable === manager && r.key === stageKey);
+  const total = rows.reduce((s, r) => s + r.ingreso, 0);
+
+  document.getElementById('modalTitle').textContent = manager + '  —  ' + stageLabel;
+  document.getElementById('modalSub').textContent   =
+    rows.length + ' registro' + (rows.length !== 1 ? 's' : '') + '  |  Total: ' + fmt(total);
+
+  let h = '';
+  if (!rows.length) {
+    h = '<div class="modal-empty">Sin registros</div>';
+  } else {
+    h = '<div class="table-wrap"><table>';
+    h += `<thead><tr>
+      <th>#</th>
+      <th>Nombre de la Negociación</th>
+      <th>Compañía</th>
+      <th>Etapa (exacta en Excel)</th>
+      <th class="r">Ingreso (USD)</th>
+    </tr></thead><tbody>`;
+
+    rows.forEach((r, i) => {
+      h += `<tr>
+        <td>${i + 1}</td>
+        <td>${esc(r.negociacion) || '<span style="color:#bbb">—</span>'}</td>
+        <td>${esc(r.compania)    || '<span style="color:#bbb">—</span>'}</td>
+        <td><code style="font-size:11px;background:#f0f3fa;padding:2px 6px;border-radius:3px">${esc(r.etapa)}</code></td>
+        <td class="r">${fmt(r.ingreso)}</td>
+      </tr>`;
+    });
+
+    h += `<tr style="background:#1EB0D5;color:white;font-weight:700">
+      <td colspan="4">Total</td>
+      <td class="r">${fmt(total)}</td>
+    </tr>`;
+    h += '</tbody></table></div>';
+  }
+
+  document.getElementById('modalBody').innerHTML = h;
+  document.getElementById('drillModal').classList.add('open');
+  document.addEventListener('keydown', escModal);
+}
+
+function closeModal() {
+  document.getElementById('drillModal').classList.remove('open');
+  document.removeEventListener('keydown', escModal);
+}
+
+function escModal(e) { if (e.key === 'Escape') closeModal(); }
+
+/* ================================================
+   GENERAR INFORME ESTÁTICO PARA COMPARTIR
+   ================================================ */
+
+function generarInforme() {
+  if (!DATA.length) return;
+
+  /* ---- Leer valores actuales de la pantalla ---- */
+  const inp1      = document.getElementById('inp1').value.trim();
+  const inp2      = document.getElementById('inp2').value.trim();
+  const liberado  = document.getElementById('liberadoVal').textContent;
+  const proyVal   = document.getElementById('proyVal').textContent;
+  const filename  = document.getElementById('filenameLabel').textContent;
+
+  const pcts = {};
+  for (const s of STAGES) {
+    const el = document.getElementById('pct_' + s.key);
+    pcts[s.key] = el ? (parseFloat(el.value) || 0) : 0;
+  }
+
+  /* ---- Reconstruir tabla de proyección con datos fijos ---- */
+  const managers = [...new Set(DATA.map(r => r.responsable).filter(Boolean))].sort();
+  const mx = {};
+  for (const m of managers) mx[m] = { '10': 0, '15': 0, '20': 0, '40': 0 };
+  for (const r of DATA) if (r.responsable && r.key) mx[r.responsable][r.key] += r.ingreso;
+  const totals = { '10': 0, '15': 0, '20': 0, '40': 0 };
+  for (const m of managers) for (const k of ['10','15','20','40']) totals[k] += mx[m][k];
+  const grandTotal = Object.values(totals).reduce((a, b) => a + b, 0);
+
+  let proyRows = '';
+  for (const m of managers) {
+    proyRows += '<tr><td><strong>' + esc(m) + '</strong></td>';
+    let rowTot = 0;
+    for (const s of STAGES) {
+      const v = mx[m][s.key];
+      rowTot += v;
+      proyRows += `<td class="r">${v ? fmt(v) : '<span style="color:#ccc">—</span>'}</td>`;
+    }
+    proyRows += `<td class="r"><strong>${fmt(rowTot)}</strong></td></tr>`;
+  }
+
+  let usdRow = '';
+  for (const s of STAGES) {
+    const usd = totals[s.key] * pcts[s.key] / 100;
+    usdRow += `<td class="r">${fmt(usd)}</td>`;
+  }
+
+  let pctRow = '';
+  for (const s of STAGES) {
+    pctRow += `<td class="r"><strong>${pcts[s.key]}%</strong></td>`;
+  }
+
+  /* ---- Top 10 por valor ---- */
+  const topRows = [...DATA].sort((a, b) => b.ingreso - a.ingreso).slice(0, 10);
+  let topHtml = '';
+  topRows.forEach((r, i) => {
+    const cls = i === 0 ? ' class="top-1"' : '';
+    topHtml += `<tr${cls}>
+      <td>${i + 1}</td>
+      <td>${esc(r.negociacion) || '—'}</td>
+      <td>${esc(r.compania)    || '—'}</td>
+      <td>${esc(r.etapa)}</td>
+      <td>${esc(r.responsable) || '—'}</td>
+      <td class="r">${fmt(r.ingreso)}</td>
+    </tr>`;
+  });
+
+  /* ---- Fecha del informe ---- */
+  const d = new Date();
+  const MONTHS = ['enero','febrero','marzo','abril','mayo','junio',
+                  'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const DAYS   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const fechaStr = `${DAYS[d.getDay()]}, ${d.getDate()} de ${MONTHS[d.getMonth()]} de ${d.getFullYear()}`;
+  const dt = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dow = dt.getUTCDay() || 7; dt.setUTCDate(dt.getUTCDate() + 4 - dow);
+  const y0 = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
+  const week = Math.ceil((((dt - y0) / 86400000) + 1) / 7);
+
+  /* ---- Construir HTML estático ---- */
+  const thCols = STAGES.map(s => `<th class="r">${esc(s.header)}</th>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe Proyección — Protek Corp — ${fechaStr}</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Assistant',Arial,sans-serif;background:#EEF2FB;color:#1a1a2e;font-size:14px;line-height:1.5}
+header{background:#20409A;color:white;padding:14px 36px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 10px rgba(32,64,154,.3)}
+.logo-name{font-size:24px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase}
+.logo-subtitle{font-size:11.5px;opacity:.75;letter-spacing:.6px;margin-top:3px;text-transform:uppercase}
+.header-meta{text-align:right;font-size:12.5px;opacity:.85;line-height:1.6}
+.header-meta strong{font-weight:700;font-size:13px}
+.readonly-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);border-radius:4px;padding:4px 12px;font-size:11.5px;font-weight:600;letter-spacing:.5px}
+main{max-width:1320px;margin:0 auto;padding:28px 32px}
+.card{background:white;border-radius:8px;box-shadow:0 2px 12px rgba(32,64,154,.08);margin-bottom:28px;overflow:hidden}
+.card-title{background:#20409A;color:white;padding:11px 22px;font-size:14.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.card-body{padding:24px 22px}
+.resumen-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.resumen-col-title{font-size:11px;font-weight:700;color:#20409A;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;padding-bottom:6px;border-bottom:2px solid #EEF2FB}
+.s1-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field-val-label{font-size:11px;font-weight:700;color:#20409A;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.field-val{font-size:15px;color:#222;padding:9px 13px;border:1.5px solid #e4eaf6;border-radius:5px;background:#fafbff}
+.highlight-item{display:flex;align-items:center;justify-content:space-between;margin-top:16px;gap:12px}
+.highlight-label{font-size:13px;font-weight:700;color:#20409A;white-space:nowrap}
+.highlight-box{background:#FFFDE7;border:2px solid #F9A825;border-radius:5px;padding:10px 18px;font-size:20px;font-weight:700;color:#1a1a2e;min-width:190px;text-align:right}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#20409A;color:white;padding:10px 14px;text-align:left;font-weight:700;font-size:12px;white-space:nowrap}
+thead th.r{text-align:right}
+tbody tr:nth-child(odd) td{background:#fff}
+tbody tr:nth-child(even) td{background:#EEF2FB}
+tbody td{padding:9px 14px;border-bottom:1px solid #e4eaf6;vertical-align:middle}
+td.r{text-align:right;font-variant-numeric:tabular-nums}
+tr.row-total td{background:#1EB0D5!important;color:#fff!important;font-weight:700;border-bottom:none}
+tr.row-pct td{background:#EEF2FB!important;color:#20409A!important;font-weight:700;border-bottom:1px solid #c8d0e8}
+tr.row-usd td{background:#1EB0D5!important;color:#fff!important;font-weight:700;border-bottom:none}
+tr.top-1 td{background:#FFF8DC!important}
+.source-note{font-size:11px;color:#A7A9AC;margin-top:10px;font-style:italic}
+@media print{
+  body{background:white}
+  .card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}
+  .card--pagebreak{page-break-before:always;break-before:page}
+  header,thead th,tr.row-total td,tr.row-pct td,tr.row-usd td,
+  tbody tr:nth-child(odd) td,tbody tr:nth-child(even) td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo-name">Protek Corp</div>
+    <div class="logo-subtitle">Informe Semanal de Proyección de Ventas</div>
+  </div>
+  <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+    <div class="header-meta"><strong>${fechaStr}</strong><br>Semana ${week}</div>
+    <span class="readonly-badge">INFORME DE SOLO LECTURA</span>
+  </div>
+</header>
+<main>
+
+<!-- RESUMEN -->
+<div class="card">
+  <div class="card-title">Resumen del Mes</div>
+  <div class="card-body">
+    <div class="resumen-grid">
+      <div>
+        <div class="resumen-col-title">Avance de Ventas</div>
+        <div class="s1-grid">
+          <div>
+            <div class="field-val-label">Oppen Protek SRL (USD)</div>
+            <div class="field-val">${inp1 || '—'}</div>
+          </div>
+          <div>
+            <div class="field-val-label">Oppen Shyma (USD)</div>
+            <div class="field-val">${inp2 || '—'}</div>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <span class="highlight-label">Liberado con IVA</span>
+          <div class="highlight-box">${liberado}</div>
+        </div>
+      </div>
+      <div>
+        <div class="resumen-col-title">Proyección del Mes</div>
+        <div class="highlight-item">
+          <span class="highlight-label">Proyección</span>
+          <div class="highlight-box">${proyVal}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CUADRO DE PROYECCIÓN -->
+<div class="card">
+  <div class="card-title">Cuadro de Proyección de Ventas</div>
+  <div class="card-body">
+    <div class="table-wrap"><table>
+      <thead><tr><th>Gerente de Cuenta</th>${thCols}<th class="r">Total</th></tr></thead>
+      <tbody>
+        ${proyRows}
+        <tr class="row-total"><td><strong>Total</strong></td>${STAGES.map(s=>`<td class="r">${fmt(totals[s.key])}</td>`).join('')}<td class="r">${fmt(grandTotal)}</td></tr>
+        <tr class="row-pct"><td>% de Probabilidad</td>${pctRow}<td></td></tr>
+        <tr class="row-usd"><td><strong>USD a Liberar</strong></td>${usdRow}<td></td></tr>
+      </tbody>
+    </table></div>
+    <p class="source-note">Fuente: ${esc(filename)}</p>
+  </div>
+</div>
+
+<!-- TOP DE PROYECTOS -->
+<div class="card card--pagebreak">
+  <div class="card-title">Top 10 de Proyectos</div>
+  <div class="card-body">
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th style="width:40px">#</th>
+        <th>Nombre de la Negociación</th>
+        <th>Compañía</th>
+        <th>Etapa</th>
+        <th>Gerente de Cuenta</th>
+        <th class="r">Ingreso (USD)</th>
+      </tr></thead>
+      <tbody>${topHtml}</tbody>
+    </table></div>
+  </div>
+</div>
+
+</main>
+</body>
+</html>`;
+
+  /* ---- Descargar como archivo .html ---- */
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const dateTag = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  a.href     = url;
+  a.download = `Informe Proyeccion Protek ${dateTag}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
